@@ -33,7 +33,7 @@
 
 	
 	# update column names to those used in script
-		colnames(df0)<-ref_tab$CA_Standard[match(tolower(colnames(df0)),tolower(ref_tab$Own_names2))]
+		colnames(df0)<-ref_tab$CA_Standard[match(tolower(colnames(df0)),tolower(ref_tab$Own_names))]
 
 	# removes columns not in accepted list
 		df0[,!colnames(df0) %in% ref_tab$CA_Standard]<-NULL
