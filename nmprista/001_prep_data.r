@@ -36,7 +36,7 @@
 		colnames(df0)<-ref_tab$CA_Standard[match(tolower(colnames(df0)),tolower(ref_tab$Own_names))]
 
 	# removes columns not in accepted list
-		df0[,!colnames(df0) %in% ref_tab$CA_Standard]<-NULL
+		df0[,!colnames(df0) %in% ref_tab$CA_Standard]<-"NULL"
 
 	# creates columns missing	
 		for (i in ref_tab$CA_Standard)
