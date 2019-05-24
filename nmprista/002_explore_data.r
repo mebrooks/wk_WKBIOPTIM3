@@ -223,20 +223,7 @@
 			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot2_initial.png", sep=""), type = "png")		
 			dev.off()			
 
-			# support graph 3				
-			windows(7,5); par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
-			plot(mwcv_age~mwcv_lenCls, ylim = c(0,100), xlim = c(0,100), main = "MWCV of length vs. age", xlab="MWCV (length)", ylab="MWCV (age)" )
-			points(mwcv_lenCls, mwcv_age, col="black")
-			points(mwcv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], mwcv_age[names(cv_age) %in% names(table_select_samples)], col="red")
-			cor(mwcv_lenCls,mwcv_age)
-			abline(1,1, lty=2, col=1)
-			plot(cv_age~cv_lenCls , ylim = c(0,20), xlim = c(0,20), main = "CV of the mean of length vs. age", xlab="CV of the mean (length)", ylab="CV of the mean (age)" )
-			points(cv_lenCls, cv_age, col="black")
-			points(cv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], cv_age[names(cv_age) %in% names(table_select_samples)], col="red")
-			cor(cv_lenCls,cv_age)
-			abline(1,1, lty=2, col=1)
-			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot3_initial.png", sep=""), type = "png")		
-			dev.off()
+			
 
 
 		# 5th step: by now you should be able to set some test values for "good enough samples" and evaluate coverage of the data you are retaining for analysis
@@ -253,6 +240,23 @@
 				# set 		
 				min_n_test<-100
 				table_select_samples<-table(df0$sampId)[table(df0$sampId)>=min_n_test]; 
+
+# Isabella: I moved this part of the script because the  table_select_samples was not defined.
+# support graph 3				
+			windows(7,5); par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
+			plot(mwcv_age~mwcv_lenCls, ylim = c(0,100), xlim = c(0,100), main = "MWCV of length vs. age", xlab="MWCV (length)", ylab="MWCV (age)" )
+			points(mwcv_lenCls, mwcv_age, col="black")
+			points(mwcv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], mwcv_age[names(cv_age) %in% names(table_select_samples)], col="red")
+			cor(mwcv_lenCls,mwcv_age)
+			abline(1,1, lty=2, col=1)
+			plot(cv_age~cv_lenCls , ylim = c(0,20), xlim = c(0,20), main = "CV of the mean of length vs. age", xlab="CV of the mean (length)", ylab="CV of the mean (age)" )
+			points(cv_lenCls, cv_age, col="black")
+			points(cv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], cv_age[names(cv_age) %in% names(table_select_samples)], col="red")
+			cor(cv_lenCls,cv_age)
+			abline(1,1, lty=2, col=1)
+			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot3_initial.png", sep=""), type = "png")		
+			dev.off()
+
 				# prints the number of samples being considered and the proportion of total samples they represent
 				cat("No. selected samples:",length(table_select_samples),"\n")
 				cat("% selected samples:",length(table_select_samples)/length(unique(df0$sampId))*100,"\n")
