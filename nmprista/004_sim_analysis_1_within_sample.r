@@ -18,8 +18,7 @@
 		
 		load("003_Sim_Results\\Sim_results_201905252351.rdata")		
 			
-		samples_to_analyze <- names(res_sims)
-		sim_res<-res_sims
+		samples_to_analyze <- names(sim_res)
 		
 		# 2014_2535 low MWCV
 		# 2014_2542 intermediate MWCV
@@ -102,7 +101,7 @@
 			best_scale <- determine_best_scale(x = sim_res, variables = c("lenCls","age"), stats = c("min","max"), zero_is_lowest = TRUE)
 			do_boxplox_sims_numeric(x = sim_res, y = df0, variables = c("lenCls","age"), stats = c("min","max"), escala = best_scale, save_plot=TRUE, filename_root = "Min_Max_", dir_output = "004_Sim_Analysis/")
 		
-		
+			graphics.off()
 		
 		
 		# results of original samples [note: if SRSWR than selects replicate 2 of each sim - a different replicate can be selected by tweaking the code]
@@ -133,13 +132,15 @@
 		# selection of the most appropriate sample size [within sample sizes]
 		# ====================================================
 	
+			# the following function is handy in producing tables of stats in sim_res_var* that can be used to select samp size
+			
 			f1<-function(x, variable, target_stat, FUN = "median")
 							{
 							# x is sim_res_var_pop or sim_res_var_nopop
 							t1<-tapply(x[[variable]][[target_stat]],list(x[[variable]][["sim"]],x[[variable]][["sampId"]]), FUN)
 							t1
 							}
-		
+			# analysis
 			f1(x = sim_res_var_nopop, variable = "lenCls", target_stat = "MWCV", FUN = "max")
 			f1(x = sim_res_var_nopop, variable = "age", target_stat = "MWCV", FUN = "max")
 			f1(x = sim_res_var_nopop, variable = "lenCls", target_stat = "cv", FUN = "max")
@@ -148,8 +149,9 @@
 			f1(x = sim_res_var_nopop, variable = "lenCls", target_stat = "cv", FUN = function(x){sum(x<5)})
 			f1(x = sim_res_var_nopop, variable = "weight-length", target_stat = "r.squared", FUN = function(x){sum(x>0.90)})
 		
-		# mean weights associated to sample sizes
-		apply(f1(x = sim_res_var_nopop, variable = "lenCls", target_stat = "estim_weight", FUN = "mean"),1,max)
+		# mean weights associated to sample sizes [generally better to communicate weights rather than numbers]
+			
+			apply(f1(x = sim_res_var_nopop, variable = "lenCls", target_stat = "estim_weight", FUN = "mean"),1,max)
 		
 		
 			# analysis: two ways:
@@ -163,8 +165,11 @@
 				# we determine the number from an accepted lost relative to a reference sample size or the one we obtained	
 		
 		# multivariate results of a sample size	
+			
 			selected_samp_size<-90	
-		
+
+			# the following function is handy in producing graphs showing what to expect in terms of MWCV or CV of different vars when a certain sample size is selected
+			
 			f2<-function(x, variable, target_stat, selected_samp_size = 20, escala = best_scale)
 								{
 								# x is sim_res_var_pop or sim_res_var_nopop								
@@ -180,5 +185,24 @@
 			f2(x = sim_res_var_nopop,variable = "age", target_stat = "MWCV", selected_samp_size = 50)
 			f2(x = sim_res_var_nopop,variable = "age", target_stat = "cv", selected_samp_size = 50)
 	
+		# The following function returns a table with FUN applied to all replicates of a give sample size
 	
-	
+			f3 <- function(x, target_vars, target_stats, selected_samp_size = 20, FUN)
+								{
+								out<-data.frame()	
+								# x is sim_res_var_pop or sim_res_var_nopop								
+								for (target_var in target_vars)
+									{
+									a<-as.data.frame(x[[target_var]])
+									out<-rbind(out, data.frame(target_var = target_var, a[a$sim==selected_samp_size,c("sim",target_stats)]))
+									}
+								ls1<-split(out[,target_stats], target_vars)
+								ls2<-lapply(ls1, function(x, f = FUN) apply(x, 2, f))
+								out<-do.call("rbind",ls2)
+								out
+								}	
+			
+			f3(x = sim_res_var_nopop, target_vars = c("lenCls","age"), target_stats = c("cv","MWCV"), selected_samp_size = 90, FUN = "max")					
+			f3(x = sim_res_var_nopop, target_vars = c("lenCls","age"), target_stats = c("cv","MWCV"), selected_samp_size = 90, FUN = "median")					
+								
+		
