@@ -196,7 +196,7 @@
 	
 	
 	# select number of sims
-	nsim <- 1000
+	nsim <- 500
 	
 	# select number of CPUs
 		# use code below to check how many CPUs you have - it is better you leave some for other stuff your computer is running (I use 5/8 in my sims)
@@ -204,13 +204,13 @@
 		n_CPUs <- 5
 	
 	# creates storage object	
-		sim_res<-sapply(samples_to_analyze[1:4], function(x) NULL)	
+		sim_res<-sapply(samples_to_analyze, function(x) NULL)	
 
 # =======================
 # Simulations
 # =======================
 		
-for (sampId in samples_to_analyze[1:4])
+for (sampId in samples_to_analyze)
 	{
 	# initiates time and sim counters 
 	run <- which(sampId==samples_to_analyze)
@@ -275,11 +275,11 @@ for (sampId in samples_to_analyze[1:4])
 		# issues a motivating ping
 			beep("ping")
 		# gives processors a bit of rest
-			Sys.sleep(1)
+			Sys.sleep(5)
 		# issues a few useful time estimates [...because everyone wants to go to lunch :P ]
-			print(paste("time spent:",round(difftime(Sys.time(),ptc, units="secs"),2),"secs"))
-			print(paste("average time spent:", round(difftime(Sys.time(),ptc_ini, units="secs")/(run),2),"secs")) 
-			print(paste("estimate time left:", round(difftime(ptc <- Sys.time(), ptc_ini, units="secs")/run*(runs_left-1),2),"secs"))
+			print(paste("time spent:",round(difftime(Sys.time(),ptc, units="mins"),2),"mins"))
+			print(paste("average time spent:", round(difftime(Sys.time(),ptc_ini, units="mins")/(run),2),"mins")) 
+			print(paste("estimate time left:", round(difftime(ptc <- Sys.time(), ptc_ini, units="mins")/run*(runs_left-1),2),"mins"))
 	# finalizes	
 		if(runs_left == 0){ 
 			# cleans and stops CPUs	
