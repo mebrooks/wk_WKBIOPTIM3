@@ -26,8 +26,8 @@
 		# 2015_2562 2015_2565 similar (high MWCV)
 	
 		
-		source("000_Auxiliary_Funs\\func_determine_best_scale.r") # used to determine the best scale of the graphs
-		source("000_Auxiliary_Funs\\func_do_boxplot_sample_numeric.r")
+		source("000_Auxiliary_Funs\\Sim_Analysis\\func_determine_best_scale.r") # used to determine the best scale of the graphs
+		source("000_Auxiliary_Funs\\Sim_Analysis\\func_do_boxplot_sample_numeric.r")
 		source("000_Auxiliary_Funs\\func_do_MWCV.r")
 		source("000_Auxiliary_Funs\\func_do_CV_mean.r")
 		
