@@ -18,8 +18,7 @@
 		
 		load("003_Sim_Results\\Sim_results_201905252351.rdata")		
 			
-		samples_to_analyze <- names(res_sims)
-		sim_res<-res_sims
+		samples_to_analyze <- names(sim_res)
 		
 		# 2014_2535 low MWCV
 		# 2014_2542 intermediate MWCV
