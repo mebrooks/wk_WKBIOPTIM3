@@ -56,7 +56,7 @@
 
 	source("000_Auxiliary_Funs\\Modeling\\func_fitMod_MWCV.r")
 	source("000_Auxiliary_Funs\\Modeling\\func_fitMod_CV.r")
-	source("000_Auxiliary_Funs\\Modeling\\boxcox.nls2.R") # used in fitMod_MWCV and fitMod_CV
+	source("000_Auxiliary_Funs\\Modeling\\func_boxcox.nls2.R") # used in fitMod_MWCV and fitMod_CV
 	
 	lst.fitMod_MWCV<-fitMod_MWCV(dataset = sim_res_var_nopop, target_variable = "lenCls", sampIds = samples_to_analyze, lambda = seq(-3,-1, by=1/10))
 	#lst.fitMod_MWCV<-fitMod_MWCV(dataset = sim_res_var_nopop, target_variable = "age", sampIds = samples_to_analyze, lambda = seq(-3,-1, by=1/10))
