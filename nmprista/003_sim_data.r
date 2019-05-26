@@ -204,7 +204,7 @@
 		n_CPUs <- 5
 	
 	# creates storage object	
-		res_sims<-sapply(samples_to_analyze[1:4], function(x) NULL)	
+		sim_res<-sapply(samples_to_analyze[1:4], function(x) NULL)	
 
 # =======================
 # Simulations
@@ -267,7 +267,7 @@ for (sampId in samples_to_analyze[1:4])
 					DT_sim<-data.table(out_sim[[i]][[variable]])
 					DT[[variable]]<-rbind(DT[[variable]], DT_sim)
 					}
-				res_sims[[sampId]][[variable]]<-DT[[variable]]
+				sim_res[[sampId]][[variable]]<-DT[[variable]]
 				}
 		# cleans objects from master
 			rm(out_sim, sampling_options, df1)
@@ -295,7 +295,7 @@ for (sampId in samples_to_analyze[1:4])
 # Save results
 # =======================
 	
-	save(df0, min_n, res_sims, nsim, file=paste("003_Simdata\\Sim_results_",format(Sys.time(), "%Y%m%d%H%M"),".rdata", sep=""))
+	save(df0, min_n, sim_res, nsim, sampling_design, ls_sampling_options, file=paste("003_Sim_Results\\Sim_results_",format(Sys.time(), "%Y%m%d%H%M"),".rdata", sep=""))
 
 	
 
