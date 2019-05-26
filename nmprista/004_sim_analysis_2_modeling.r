@@ -54,9 +54,9 @@
 	samples_to_analyze <- names(sim_res)
 	#samples_to_analyze <- c("2014_2024","2016_2005","2016_2009","2015_2008")
 
-	source("000_Auxiliary_Funs\\Modeling\\func_fitMod_MWCV.r")
-	source("000_Auxiliary_Funs\\Modeling\\func_fitMod_CV.r")
-	source("000_Auxiliary_Funs\\Modeling\\func_boxcox.nls2.R") # used in fitMod_MWCV and fitMod_CV
+	source("000_Auxiliary_Funs\\Sim_Modeling\\func_fitMod_MWCV.r")
+	source("000_Auxiliary_Funs\\Sim_Modeling\\func_fitMod_CV.r")
+	source("000_Auxiliary_Funs\\Sim_Modeling\\func_boxcox.nls2.R") # used in fitMod_MWCV and fitMod_CV
 	
 	lst.fitMod_MWCV<-fitMod_MWCV(dataset = sim_res_var_nopop, target_variable = "lenCls", sampIds = samples_to_analyze, lambda = seq(-3,-1, by=1/10))
 	#lst.fitMod_MWCV<-fitMod_MWCV(dataset = sim_res_var_nopop, target_variable = "age", sampIds = samples_to_analyze, lambda = seq(-3,-1, by=1/10))
@@ -66,7 +66,7 @@
 # Prediction of 3 exponential models for different sample sizes [sample by sample, all models]
 # =========================
 
-	source("000_Auxiliary_Funs\\Modeling\\func_predAllMod_MWCV.r")
+	source("000_Auxiliary_Funs\\Sim_Modeling\\func_predAllMod_MWCV.r")
 	for (i in samples_to_analyze)
 		{
 		out<-predAllMod_MWCV(lst.fitMod_MWCV, sampId = i, orig_data = sim_res, n_vec = seq(10,90, by=10), plot_it = TRUE, save_plot = TRUE, save_dir="004_Sim_Analysis\\Modeling\\")
@@ -77,10 +77,10 @@
 # Diagnostics of 3 exponential models for different sample sizes [sample by sample, all models]
 # =========================
 	
-	source("000_Auxiliary_Funs\\Modeling\\func_diagAllMod_MWCV.r")
+	source("000_Auxiliary_Funs\\Sim_Modeling\\func_diagAllMod_MWCV.r")
 	for (i in samples_to_analyze[1])
 		{
-		diagAllMod_MWCV(lst.fitMod_MWCV, sampId = i, save_plot = TRUE, save_dir="004_Sim_Analysis\\Modeling\\")	
+		diagAllMod_MWCV(lst.fitMod_MWCV, sampId = i, save_plot = TRUE, save_dir="004_Sim_Analysis\\Sim_Modeling\\")	
 		}
 	
 	graphics.off()
@@ -102,7 +102,7 @@
 		res_pred_rel<-res_pred_abs[-1,]
 	
 	# computations
-		source("000_Auxiliary_Funs\\Modeling\\func_predSelectMod_MWCV.r")
+		source("000_Auxiliary_Funs\\Sim_Modeling\\func_predSelectMod_MWCV.r")
 		source("000_Auxiliary_Funs\\func_do_MWCV.r")
 		for( i in 1:length(lst.fitMod_MWCV))
 		{
@@ -138,7 +138,7 @@
 		selModel = "mod3"
 	
 		# computations
-		source("000_Auxiliary_Funs\\Modeling\\func_invpredSelectMod_MWCV.r")
+		source("000_Auxiliary_Funs\\Sim_Modeling\\func_invpredSelectMod_MWCV.r")
 		for( i in 1:length(lst.fitMod_MWCV))
 		{
 		res_invpred_abs[,i]<-round(invpredSelectMod_MWCV(lst.fitMod_MWCV, sampId = names(lst.fitMod_MWCV)[i], mwcv_vec = invpred_range, selMod = selModel)$invpred)	
