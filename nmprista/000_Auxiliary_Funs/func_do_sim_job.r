@@ -12,12 +12,12 @@ do_sim_job <- function(lo)
 			{
 			if(!sampling_options$stratified & (sampling_options$stages =="one" | sampling_options$stages =="two")) # not stratified, one or two stages
 				{
-				print(paste("Processing sample size", sampling_options$samp_sizes[j]))	
+				#print(paste("Processing sample size", sampling_options$samp_sizes[j]))	
 				if(sampling_options$stages == "one") w <- "1st_Stage" else w <- "2nd_Stage"
 				 for (variable in vars_numerical)
 					{	
 					#ptc1<-Sys.time()
-					print(paste(".",variable, sep=""))
+					#print(paste(".",variable, sep=""))
 					#source("sample_level_funs1.R")
 					#print(Sys.time()-ptc1)
 					ls_sims_stats[[j]][[variable]]<-do.call("rbind",lapply(ls_sims1[[j]], function(x, y = ls_original_modes_sample){make_summary_numeric(x[[w]], variable, a= coefs_weight_length[["a"]], b=coefs_weight_length[["b"]], ls_original_modes_sample = y, repl = lo)}))
@@ -25,7 +25,7 @@ do_sim_job <- function(lo)
 				 for (variable in vars_categorical)
 					{	
 					#ptc1<-Sys.time()
-					print(paste(".",variable, sep=""))
+					#print(paste(".",variable, sep=""))
 					#source("sample_level_funs1.R")
 					ls_sims_stats[[j]][[variable]]<-do.call("rbind",lapply(ls_sims1[[j]], function(x){make_summary_categorical(x[[w]], variable, repl = lo)}))
 					#print(Sys.time()-ptc1)
@@ -41,7 +41,7 @@ do_sim_job <- function(lo)
 						}
 
 				# models: 
-					print(".models")
+					#print(".models")
 					if("weight-length" %in% sampling_options$models) ls_sims_stats[[j]][["weight-length"]]<-do.call("rbind",lapply(ls_sims1[[j]], function(x, model){make_models_random(x[[w]], model="weight-length", repl = lo)}))
 					if("sex-ratio" %in% sampling_options$models) ls_sims_stats[[j]][["sex-ratio"]]<-do.call("rbind",lapply(ls_sims1[[j]], function(x, model){make_models_random(x[[w]], model="sex-ratio", repl = lo)}))
 					if("L50" %in% sampling_options$models) ls_sims_stats[[j]][["L50"]]<-do.call("rbind",lapply(ls_sims1[[j]], function(x, model){make_models_random(x[[w]], model="L50", repl = lo)}))
@@ -57,7 +57,7 @@ do_sim_job <- function(lo)
 
 DT<-sapply(c(vars_categorical, vars_numerical), function(x) NULL)
 
-for (variable in c(vars_categorical, vars_numerical,sampling_options$models))
+for (variable in c(names(DT),sampling_options$models)[c(names(DT),sampling_options$models)!=""])
 {
 # compilation of results
 DT[[variable]]<-data.frame()
