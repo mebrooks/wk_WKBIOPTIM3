@@ -196,7 +196,7 @@
 									a<-as.data.frame(x[[target_var]])
 									out<-rbind(out, data.frame(target_var = target_var, a[a$sim==selected_samp_size,c("sim",target_stats)]))
 									}
-								ls1<-split(out[,target_stats], target_vars)
+								ls1<-split(out[,target_stats], out$target_var)
 								ls2<-lapply(ls1, function(x, f = FUN) apply(x, 2, f))
 								out<-do.call("rbind",ls2)
 								out
@@ -204,5 +204,11 @@
 			
 			f3(x = sim_res_var_nopop, target_vars = c("lenCls","age"), target_stats = c("cv","MWCV"), selected_samp_size = 90, FUN = "max")					
 			f3(x = sim_res_var_nopop, target_vars = c("lenCls","age"), target_stats = c("cv","MWCV"), selected_samp_size = 90, FUN = "median")					
-								
+			
+			# final graph (2 var)	
+			par(mfrow=c(2,2))
+			boxplot(cv~sim,	data=sim_res_var_nopop$age, main="cv age", ylim=best_scale$age$cv)
+			boxplot(MWCV~sim,	data=sim_res_var_nopop$age, main="MWCV age", ylim=best_scale$age$MWCV)
+			boxplot(cv~sim,	data=sim_res_var_nopop$lenCls, main="cv lenCls", ylim=best_scale$lenCls$cv)
+			boxplot(MWCV~sim,	data=sim_res_var_nopop$lenCls, main="MWCV lenCls", ylim=best_scale$lenCls$MWCV)
 		
