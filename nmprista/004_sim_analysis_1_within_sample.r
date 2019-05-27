@@ -211,4 +211,4 @@
 			boxplot(MWCV~sim,	data=sim_res_var_nopop$age, main="MWCV age", ylim=best_scale$age$MWCV)
 			boxplot(cv~sim,	data=sim_res_var_nopop$lenCls, main="cv lenCls", ylim=best_scale$lenCls$cv)
 			boxplot(MWCV~sim,	data=sim_res_var_nopop$lenCls, main="MWCV lenCls", ylim=best_scale$lenCls$MWCV)
-		
+			savePlot(filename = "004_Sim_Analysis/MWCV_CV_all_samples", type="png")
