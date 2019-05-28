@@ -61,7 +61,7 @@
 	# barplot of all variables
 		for(variable in target_vars)
 		{
-		if(variable %in% c("lenCls","age")) {niveis<-seq(min(df0[[variable]],na.rm=T), max(df0[[variable]],na.rm=T), by=median(diff(sort(unique(df0[[variable]])))))} else {niveis=unique(df0[[variable]])}
+		if(variable %in% c("lenCls","age")) {niveis<-seq(min(df0[[variable]],na.rm=T), max(df0[[variable]],na.rm=T), by=median(diff(sort(unique(df0[[variable]])))))} else {niveis=unique(sort(df0[[variable]]))}
 		if (variable == "lenCls") {xname = "length class"; yname = "No. of individuals"; titlename = "Length distribution - all samples combined"}
 		if (variable == "age") {xname = "age class"; yname = "No. of individuals"; titlename = "Age distribution - all samples combined"}
 		if (variable == "sex") {xname = "sex"; yname = "No. of individuals"; titlename = "Sex distribution - all samples combined"}
@@ -74,12 +74,14 @@
 		}
 	
 	# example of a simulation on the entire dataset
+		# you need to change the sampleId and samp_sizes
 		
 		# note: can produce many graphs so it is good to define target_sampId manually
 		# do not run
 			#target_sampId<-unique(df0$sampId)
 		
 		target_sampId<-c("2014_2016")
+		samp_sizes <- c(200, 150, 100, 50)
 		
 		for (variable in target_vars)
 		{
@@ -98,7 +100,7 @@
 						sampsize<-nrow(df2)
 						barplot(table(factor(df2[[variable]], levels=niveis)), las=2, cex.names=0.7, main=paste("original n (NAs excluded) =", nrow(df2)))	
 						barplot(table(sample(factor(df2[[variable]], levels=niveis), size=sampsize, replace=FALSE)), las=2, cex.names=0.7,  main=paste("sampled",sampsize,"wor repl"))	
-						for (j in c(200,150,100,50))
+						for (j in samp_sizes)
 						if(sampsize>=j) 
 							{
 							barplot(table(sample(factor(df2[[variable]], levels=niveis), size=j, replace=FALSE)), las=2, cex.names=0.7,  main=paste("sampled",j,"wor repl"))
