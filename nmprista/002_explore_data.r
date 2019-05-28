@@ -167,7 +167,7 @@
 
 			
 			# issues table with results (by sampleId)			
-			out<-data.frame(sampId = names(mwcv_lenCls), mwcv_lenCls,cv_lenCls, mwcv_age, cv_age, row.names=NULL)
+			out<-data.frame(sampId = names(mwcv_lenCls), sampsize, mwcv_lenCls,cv_lenCls, mwcv_age, cv_age, row.names=NULL)
 			write.csv2(out,  file= "002_Exploratory_analyses\\003_Min_n_determination_sampId_info.csv")
 			
 		# 3rd step: look at the indicator values and distributions together
