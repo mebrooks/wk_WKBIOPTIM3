@@ -62,8 +62,11 @@
 		for(variable in target_vars)
 		{
 		if(variable %in% c("lenCls","age")) {niveis<-seq(min(df0[[variable]],na.rm=T), max(df0[[variable]],na.rm=T), by=median(diff(sort(unique(df0[[variable]])))))} else {niveis=unique(df0[[variable]])}
-		if (variable == "lenCls") {xname = "length class (5 mm width)"; yname = "No. of individuals"; titlename = "Length distribution - all samples combined"}
-		if (variable == "age") {xname = "length class (5 mm width)"; yname = "No. of individuals"; titlename = "Age distribution - all samples combined"}
+		if (variable == "lenCls") {xname = "length class"; yname = "No. of individuals"; titlename = "Length distribution - all samples combined"}
+		if (variable == "age") {xname = "age class"; yname = "No. of individuals"; titlename = "Age distribution - all samples combined"}
+		if (variable == "sex") {xname = "sex"; yname = "No. of individuals"; titlename = "Sex distribution - all samples combined"}
+		if (variable == "matStage") {xname = "matStage"; yname = "No. of individuals"; titlename = "matStage distribution - all samples combined"}
+		if (variable == "mature") {xname = "mature"; yname = "No. of individuals"; titlename = "mature distribution - all samples combined"}
 		barplot(table(factor(df0[[variable]], levels=niveis)), las=2, cex.names=0.7, xlab = xname, ylab =yname, main =titlename)
 		
 		savePlot(filename = paste("002_Exploratory_analyses\\001_Barplot_All_",variable,".png", sep=""), type = "png")
