@@ -123,7 +123,7 @@
 						sampsize<-nrow(df2)
 						barplot(table(factor(df2[[variable]], levels=niveis)), las=2, cex.names=0.7, main=paste("original n (NAs excluded) =", nrow(df2)))	
 						barplot(table(sample(factor(df2[[variable]], levels=niveis), size=sampsize, replace=TRUE)), las=2, cex.names=0.7,  main=paste("sampled",sampsize,"wr repl"))	
-						for (j in c(200,150,100,50))
+						for (j in samp_sizes))
 						if(sampsize>=j) 
 							{
 							barplot(table(sample(factor(df2[[variable]], levels=niveis), size=j, replace=TRUE)), las=2, cex.names=0.7,  main=paste("sampled",j,"wr repl"))
