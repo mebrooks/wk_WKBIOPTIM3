@@ -18,7 +18,7 @@
 	
 	
 	# read and display data
-		load("001_Prepared_Inputs\\input_data.rdata")
+		load(file.path("001_Prepared_Inputs","input_data.rdata"))
 		ls()
 		head(df0)
 	
@@ -26,10 +26,9 @@
 		cat("No. of samples:",length(unique(df0$sampId)), "\n")
 
 	# No indiv per sample
-		windows(7,5)
+		png(filename=file.path("002_Exploratory_Analyses","000_Barplot_Sample_Size_Dist.png"), width = 7, height = 5, units="in", res=72)
 		barplot(table(table(df0$sampId)), xlab="sample size (indivs)", ylab = "frequency in original data", las=2)
-		savePlot(file="002_Exploratory_Analyses\\000_Barplot_Sample_Size_Dist.png",type="png")
-		
+		dev.off()		
 	# ==================	
 	# quality checks
 	# ==================
@@ -67,10 +66,10 @@
 		if (variable == "sex") {xname = "sex"; yname = "No. of individuals"; titlename = "Sex distribution - all samples combined"}
 		if (variable == "matStage") {xname = "matStage"; yname = "No. of individuals"; titlename = "matStage distribution - all samples combined"}
 		if (variable == "mature") {xname = "mature"; yname = "No. of individuals"; titlename = "mature distribution - all samples combined"}
-		barplot(table(factor(df0[[variable]], levels=niveis)), las=2, cex.names=0.7, xlab = xname, ylab =yname, main =titlename)
 		
-		savePlot(filename = paste("002_Exploratory_analyses\\001_Barplot_All_",variable,".png", sep=""), type = "png")
-		graphics.off()
+		png(filename = paste(file.path("002_Exploratory_analyses","001_Barplot_All_"),variable,".png", sep=""))
+		barplot(table(factor(df0[[variable]], levels=niveis)), las=2, cex.names=0.7, xlab = xname, ylab =yname, main =titlename)
+		dev.off()
 		}
 	
 	# example of a simulation on the entire dataset
@@ -95,7 +94,7 @@
 
 					df2<-df0[df0$sampId==i & !is.na(df0[[variable]]),]
 					# sampling the lf with various sizes
-						windows(15,7)
+					png(filename = paste(file.path("002_Exploratory_analyses","002_sampId_testsims","002_sampId_testsim_"),i,"_",variable,"_without_replacement.png", sep=""))
 						par(mfrow=c(2,3))			
 						sampsize<-nrow(df2)
 						barplot(table(factor(df2[[variable]], levels=niveis)), las=2, cex.names=0.7, main=paste("original n (NAs excluded) =", nrow(df2)))	
@@ -108,7 +107,6 @@
 									plot.new()
 									}
 			
-					savePlot(filename = paste("002_Exploratory_analyses\\002_sampId_testsims\\002_sampId_testsim_",i,"_",variable,"_without_replacement.png", sep=""), type = "png")
 					dev.off()
 					}
 
@@ -118,19 +116,18 @@
 					# Example of possibilities of simulation/optimization
 					df2<-df0[df0$sampId==i & !is.na(df0[[variable]]),]
 					# sampling the lf with various sizes
-						windows(15,7)
+					png(filename = paste(file.path("002_Exploratory_Analyses","002_sampId_testsims","002_sampId_testsims_"),i,"_",variable,"_with_replacement.png", sep=""), width = 15, height = 7, units="in", res=72)
 						par(mfrow=c(2,3))			
 						sampsize<-nrow(df2)
 						barplot(table(factor(df2[[variable]], levels=niveis)), las=2, cex.names=0.7, main=paste("original n (NAs excluded) =", nrow(df2)))	
 						barplot(table(sample(factor(df2[[variable]], levels=niveis), size=sampsize, replace=TRUE)), las=2, cex.names=0.7,  main=paste("sampled",sampsize,"wr repl"))	
-						for (j in samp_sizes))
+						for (j in samp_sizes)
 						if(sampsize>=j) 
 							{
 							barplot(table(sample(factor(df2[[variable]], levels=niveis), size=j, replace=TRUE)), las=2, cex.names=0.7,  main=paste("sampled",j,"wr repl"))
 							} else {
 									plot.new()
 									}
-					savePlot(filename = paste("002_Exploratory_analyses\\002_sampId_testsims\\002_sampId_testsims_",i,"_",variable,"_with_replacement.png", sep=""), type = "png")
 					dev.off()
 					}	
 			
@@ -152,8 +149,8 @@
 		# 2nd step: determine CV and MWCV for variables of interest and see how much they vary across your samples
 			# note: CV will depend on n and the mean value (they interact)
 			
-			source("000_Auxiliary_Funs\\func_do_MWCV.r")
-			source("000_Auxiliary_Funs\\func_do_CV_mean.r")
+			source(file.path("000_Auxiliary_Funs","func_do_MWCV.r"))
+			source(file.path("000_Auxiliary_Funs","func_do_CV_mean.r"))
 	
 			sampsize<-table(df0$sampId)
 			mwcv_lenCls<-tapply(df0$lenCls, df0$sampId, do_MWCV)
@@ -162,20 +159,20 @@
 			mwcv_age<-tapply(df0$age, df0$sampId, do_MWCV)
 			cv_age<-tapply(df0$age, df0$sampId, do_CV_mean)
 			mean_age<-tapply(df0$age, df0$sampId, mean, na.rm=T)
-			n_lenCls<-tapply(df0$lenCls[!is.na(df0$lenCls)], df0$sampId[!is.na(df0$lenCls)],length); ; n_lenCls[is.na(n_lenCls)]<-0
+			n_lenCls<-tapply(df0$lenCls[!is.na(df0$lenCls)], df0$sampId[!is.na(df0$lenCls)],length); n_lenCls[is.na(n_lenCls)]<-0
 			n_age<-tapply(df0$age, df0$sampId, length); n_age[is.na(n_age)]<-0
 
 			
 			# issues table with results (by sampleId)			
 			out<-data.frame(sampId = names(mwcv_lenCls), sampsize, mwcv_lenCls,cv_lenCls, mwcv_age, cv_age, row.names=NULL)
-			write.csv2(out,  file= "002_Exploratory_analyses\\003_Min_n_determination_sampId_info.csv")
+			write.csv2(out,  file= file.path("002_Exploratory_analyses","003_Min_n_determination_sampId_info.csv"))
 			
 		# 3rd step: look at the indicator values and distributions together
 			# note: you will have to set target variable, original_class_span, smooth_class_span, and threshold % for mode consideration [as proportion of individuals in sample]
 			
-			source("000_Auxiliary_Funs\\func_expl_analysis_smooth_and_modes.r") # contains "expl_analysis_smooth_and_modes"
-			source("000_Auxiliary_Funs\\func_localMaxima.r") # used in "expl_analysis_smooth_and_modes"
-			source("000_Auxiliary_Funs\\func_localMaxima2.r") # used in "expl_analysis_smooth_and_modes"
+			source(file.path("000_Auxiliary_Funs","func_expl_analysis_smooth_and_modes.r")) # contains "expl_analysis_smooth_and_modes"
+			source(file.path("000_Auxiliary_Funs","func_localMaxima.r")) # used in "expl_analysis_smooth_and_modes"
+			source(file.path("000_Auxiliary_Funs","func_localMaxima2.r")) # used in "expl_analysis_smooth_and_modes"
 			
 			# set target_variable
 			target_variable = "lenCls" # "age"
@@ -194,14 +191,15 @@
 											smooth_class_span = 2*original_class_span, 
 											min_proportion_to_accept_mode = 0.05,
 											save_plot = TRUE, 
-											dir_save = "002_Exploratory_Analyses\\004_sampId_barplots\\", 
-											file_root = paste("004_sampId_barplot_with_mode_detection_", sep=""), 
+											dir_save = file.path("002_Exploratory_Analyses","004_sampId_barplots",""), 
+											file_root = "004_sampId_barplot_with_mode_detection_", 
 											include_CV_MWCV_in_title = TRUE)
 					
 		# 4th step: evaluate summary graphs
 
 			# support graph 1	
-			windows(10,10); par(mfrow=c(4,2) ,mar=c(5,4,2,2))
+			png(filename = file.path("002_Exploratory_analyses","005_Min_n_determination_plot1_initial.png"), width = 10, height = 10, units="in", res=72)		
+			par(mfrow=c(4,2) ,mar=c(5,4,2,2))
 			plot(mwcv_lenCls~mean_lenCls, ylim = c(0,max(mwcv_lenCls,na.rm=T)), main = "MWCV of length vs. mean length", ylab="MWCV (length)", xlab="mean (length)" )
 			plot(cv_lenCls~mean_lenCls, ylim = c(0,max(cv_lenCls,na.rm=T)), main = "CV of length vs. mean length", ylab="CV (length)", xlab="mean (length)" )
 			plot(mwcv_lenCls~n_lenCls, ylim = c(0,max(mwcv_lenCls,na.rm=T)), main = "MWCV of length vs. n length", ylab="MWCV (length)", xlab="n (length)" )
@@ -210,11 +208,10 @@
 			plot(cv_age~mean_age, ylim = c(0,max(cv_age,na.rm=T)), main = "CV of age vs. mean age", ylab="CV (age)", xlab="mean (age)" )
 			plot(mwcv_age~n_age, ylim = c(0,max(mwcv_age,na.rm=T)), main = "MWCV of age vs. n age", ylab="MWCV (age)", xlab="n (age)" )
 			plot(cv_age~n_age, ylim = c(0,max(cv_age,na.rm=T)), main = "CV of age vs. n age", ylab="CV (age)", xlab="n (age)" )
-			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot1_initial.png", sep=""), type = "png")		
 			dev.off()			
 			
 			# support graph 2		
-			windows(7,5)
+			png(filename = file.path("002_Exploratory_analyses","005_Min_n_determination_plot2_initial.png"), width = 7, height = 5, units="in", res=72)
 			xlabels = paste("[",sort(unique(sampsize%/%20))*20,"-",sort(unique(sampsize%/%20+1))*20,"[", sep="")
 			par(mfrow=c(2,2) ,mar=c(5,4,2,2))
 			boxplot(mwcv_lenCls~c(sampsize%/%20), varwidth=T, ylim=c(0, max(mwcv_lenCls, na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="MWCV of lenCls")
@@ -223,20 +220,19 @@
 			#abline(v=4.5, col=2, lty=2)
 			boxplot(mwcv_age~c(sampsize%/%20), varwidth=T, ylim=c(0, max(mwcv_age, na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="MWCV of age")
 			#abline(v=4.5, col=2, lty=2)
-			boxplot(cv_age~c(sampsize%/%20), varwidth=T, ylim=c(0, max(cv_age, na.rm=T), na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="CV of the mean age")
+			boxplot(cv_age~c(sampsize%/%20), varwidth=T, ylim=c(0, max(cv_age, na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="CV of the mean age")
 			#abline(v=4.5, col=2, lty=2)
-			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot2_initial.png", sep=""), type = "png")		
 			dev.off()			
 
 			# support graph 3				
-			windows(7,5); par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
+			png(filename = file.path("002_Exploratory_analyses","005_Min_n_determination_plot3_initial.png"), width = 7, height = 5, units="in", res=72); 
+			par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
 			plot(mwcv_age~mwcv_lenCls, ylim = c(0,100), xlim = c(0,100), main = "MWCV of length vs. age", xlab="MWCV (length)", ylab="MWCV (age)" )
 			cor(mwcv_lenCls,mwcv_age)
 			abline(1,1, lty=2, col=1)
 			plot(cv_age~cv_lenCls , ylim = c(0,20), xlim = c(0,20), main = "CV of the mean of length vs. age", xlab="CV of the mean (length)", ylab="CV of the mean (age)" )
 			cor(cv_lenCls,cv_age)
 			abline(1,1, lty=2, col=1)
-			savePlot(filename = paste("002_Exploratory_analyses\\005_Min_n_determination_plot3_initial.png", sep=""), type = "png")		
 			dev.off()
 
 
@@ -268,8 +264,8 @@
 					# differences in percent - if too much, try adjusting min_n_test down and see if it improves
 					cat("% dif between original and final dataset in terms of No. of samples: \n",original_prop_samples-final_prop_samples,"\n") 	
 					cat("% dif between original and final dataset in terms of No. of indiv: \n",original_prop_indiv-final_prop_indiv,"\n") 	
-					write.csv2(original_prop_samples-final_prop_samples,  file= "002_Exploratory_analyses\\006_Min_n_coverage_samples.csv")
-					write.csv2(original_prop_indiv-final_prop_indiv,  file= "002_Exploratory_analyses\\006_Min_n_coverage_indivs.csv")
+					write.csv2(original_prop_samples-final_prop_samples,  file= file.path("002_Exploratory_analyses","006_Min_n_coverage_samples.csv"))
+					write.csv2(original_prop_indiv-final_prop_indiv,  file= file.path("002_Exploratory_analyses","006_Min_n_coverage_indivs.csv"))
 					rm(ctr_var1, ctr_var2, original_prop_samples, final_prop_samples, original_prop_indiv, final_prop_indiv)
 					
 					
@@ -281,7 +277,8 @@
 		# 6th step: re-evaluate summary graphs
 
 			# support graph 1	
-			windows(10,10); par(mfrow=c(4,2) ,mar=c(5,4,2,2))
+			png(filename = file.path("002_Exploratory_analyses","006_Min_n_determination_plot1_final.png"), width =  10,height = 10, units="in", res=72) 
+			par(mfrow=c(4,2) ,mar=c(5,4,2,2))
 			plot(mwcv_lenCls~mean_lenCls, ylim = c(0,max(mwcv_lenCls,na.rm=T)), main = "MWCV of length vs. mean length", ylab="MWCV (length)", xlab="mean (length)" )
 			points(mean_lenCls[names(mean_lenCls) %in% names(table_select_samples)], mwcv_lenCls[names(mwcv_lenCls) %in% names(table_select_samples)], col="red")
 			plot(cv_lenCls~mean_lenCls, ylim = c(0,max(cv_lenCls,na.rm=T)), main = "CV of length vs. mean length", ylab="CV (length)", xlab="mean (length)" )
@@ -298,11 +295,10 @@
 			points(n_age[names(n_age) %in% names(table_select_samples)], mwcv_age[names(mwcv_age) %in% names(table_select_samples)], col="red")
 			plot(cv_age~n_age, ylim = c(0,max(cv_age,na.rm=T)), main = "CV of age vs. n age", ylab="CV (age)", xlab="n (age)" )
 			points(n_age[names(n_age) %in% names(table_select_samples)], cv_age[names(cv_age) %in% names(table_select_samples)], col="red")
-			savePlot(filename = paste("002_Exploratory_analyses\\006_Min_n_determination_plot1_final.png", sep=""), type = "png")		
 			dev.off()			
 			
 			# support graph 2		
-			windows(7,5)
+			png(filename = file.path("002_Exploratory_analyses","006_Min_n_determination_plot2_final.png"), width = 7,height = 5, units="in", res=72)
 			xlabels = paste("[",sort(unique(sampsize%/%20))*20,"-",sort(unique(sampsize%/%20+1))*20,"[", sep="")
 			par(mfrow=c(2,2) ,mar=c(5,4,2,2))
 			boxplot(mwcv_lenCls~c(sampsize%/%20), varwidth=T, ylim=c(0, max(mwcv_lenCls, na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="MWCV of lenCls")
@@ -313,11 +309,11 @@
 			abline(v=min_n_test%/%20-0.5, col=2, lty=2)
 			boxplot(cv_age~c(sampsize%/%20), varwidth=T, ylim=c(0, max(cv_age, na.rm=T)), names=xlabels, las=2, cex.axis=0.9, main="CV of the mean age")
 			abline(v=min_n_test%/%20-0.5, col=2, lty=2)
-			savePlot(filename = paste("002_Exploratory_analyses\\006_Min_n_determination_plot2_final.png", sep=""), type = "png")		
 			dev.off()			
 
 			# support graph 3				
-			windows(7,5); par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
+			png(filename = file.path("002_Exploratory_analyses","006_Min_n_determination_plot3_final.png"), width =  7, height = 5, units="in", res=72) 
+			par(mfrow=c(1,2) ,mar=c(5,4,2,2))			
 			plot(mwcv_age~mwcv_lenCls, ylim = c(0,100), xlim = c(0,100), main = "MWCV of length vs. age", xlab="MWCV (length)", ylab="MWCV (age)" )
 			points(mwcv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], mwcv_age[names(cv_age) %in% names(table_select_samples)], col="red")
 			cor(mwcv_lenCls,mwcv_age)
@@ -326,7 +322,6 @@
 			points(cv_lenCls[names(cv_lenCls) %in% names(table_select_samples)], cv_age[names(cv_age) %in% names(table_select_samples)], col="red")
 			cor(cv_lenCls,cv_age)
 			abline(1,1, lty=2, col=1)
-			savePlot(filename = paste("002_Exploratory_analyses\\006_Min_n_determination_plot3_final.png", sep=""), type = "png")		
 			dev.off()
 
 		
@@ -334,4 +329,6 @@
 			min_n <- min_n_test
 
 		# save		
-		save(min_n, file="001_Prepared_Inputs\\Min_n.Rdata")	
+		save(min_n, file=file.path("001_Prepared_Inputs","Min_n.Rdata"))
+		
+		

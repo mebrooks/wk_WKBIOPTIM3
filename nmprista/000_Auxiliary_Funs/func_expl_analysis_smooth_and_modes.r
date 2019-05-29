@@ -12,7 +12,7 @@
 	# 2019-05-23: adjusted placement of mode indicator 
 	
 
-expl_analysis_smooth_and_modes <- function( df0 = df0, variable = "lenCls", samples_to_analyze = samples_to_analyze, smooth_class_span = 2, min_proportion_to_accept_mode = 0.01, save_plot = FALSE, dir_save = "002_Exploratory_analyses\\", file_root = paste("003_mode_detection_", sep=""), include_CV_MWCV_in_title = FALSE)
+expl_analysis_smooth_and_modes <- function( df0 = df0, variable = "lenCls", samples_to_analyze = samples_to_analyze, smooth_class_span = 2, min_proportion_to_accept_mode = 0.01, save_plot = TRUE, dir_save = file.path("002_Exploratory_analyses", ""), file_root = paste("003_mode_detection_", sep=""), include_CV_MWCV_in_title = FALSE)
 {
 				# added save_plot option
 				#browser()
@@ -21,7 +21,9 @@ expl_analysis_smooth_and_modes <- function( df0 = df0, variable = "lenCls", samp
 					df1<-df0[df0$sampId == sample_id,]
 					sample_threshold_for_modes <- min_proportion_to_accept_mode * nrow(df1)
 					# Exploratory checks
-						windows(10,7)
+					if(save_plot){
+						png(filename = paste(dir_save, file_root, df1$sampId[1],"_",variable,".png", sep=""), width=10,height=7, units="in", res=72)
+					}
 						par(mfrow=c(1,2))
 							# lengths freq (original and smooth)
 								original_freq<-table(factor(df1[[variable]], levels=seq(min(df1[[variable]]), max(df1[[variable]]), by=original_class_span))); original_freq
@@ -52,7 +54,6 @@ expl_analysis_smooth_and_modes <- function( df0 = df0, variable = "lenCls", samp
 								title(df1$sampId[1], outer=T, line=-1)
 								if (save_plot==TRUE)
 									{
-									savePlot(filename = paste(dir_save, file_root, df1$sampId[1],"_",variable,".png", sep=""), type = "png")				
 									dev.off()
 									} else {
 										keyPressed = readkeygraph("[press enter to continue]")

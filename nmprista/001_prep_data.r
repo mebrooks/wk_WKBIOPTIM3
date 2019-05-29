@@ -19,8 +19,8 @@
 		dir.create("000_Auxiliary_Tables")
 		dir.create("001_Prepared_Inputs")
 		dir.create("002_Exploratory_Analyses")
-		dir.create("002_Exploratory_Analyses\\002_sampId_testsims")
-		dir.create("002_Exploratory_Analyses\\004_sampId_barplots")
+		dir.create(file.path("002_Exploratory_Analyses", "002_sampId_testsims"))
+		dir.create(file.path("002_Exploratory_Analyses","004_sampId_barplots"))
 		dir.create("003_Simdata")
 		dir.create("004_Results")
 
@@ -28,8 +28,8 @@
 	# copy col_names_conversion_table to 000_Auxiliary_Tables	
 	
 	# load data files
-		df0<-read.table("000_Original_Data\\HER_SD_25_2014-2017_share.txt", header=TRUE, sep="\t")
-		ref_tab<-read.csv2("000_Auxiliary_Tables\\col_names_conversion_table.csv")
+		df0<-read.table(file.path("000_Original_Data","HER_SD_25_2014-2017_share.txt"), header=TRUE, sep="\t")
+		ref_tab<-read.csv2(file.path("000_Auxiliary_Tables","col_names_conversion_table.csv"))
 
 	
 	# update column names to those used in script
@@ -68,7 +68,7 @@
 			rownames(df0)<-NULL
 	
 	# saves prepared data	
-	save(df0, file="001_Prepared_Inputs\\Input_data.Rdata")		
+	save(df0, file=file.path("001_Prepared_Inputs","Input_data.Rdata"))		
 
 
 
